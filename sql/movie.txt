@@ -1,0 +1,195 @@
+DROP DATABASE IF EXISTS movies_database;
+CREATE DATABASE movies_database;
+USE movies_database;
+
+
+CREATE TABLE movies_database.movies(
+id int not null auto_increment primary key,
+title varchar(255) NOT NULL unique,
+date DATE NULL default NULL,
+budget double not null,
+income double not null,
+length int unsigned not null
+);
+
+CREATE TABLE movies_database.awards(
+id int not null auto_increment primary key,
+name varchar(255) not null,
+year YEAR NOT NULL,
+movie_id int not null,
+constraint foreign key (movie_id) references movies(id)
+);
+
+
+CREATE TABLE movies_database.nominations(
+id int not null auto_increment primary key,
+name varchar(255) not null,
+year YEAR NOT NULL,
+award_id int not null,
+constraint foreign key (award_id) references awards(id)
+);
+
+CREATE TABLE movies_database.audience(
+id int not null auto_increment primary key,
+name varchar(255) not null,
+old int unsigned not null,
+visitedPremiere INT NOT NULL
+);
+
+CREATE TABLE movies_database.movies_audience(
+movie_id int not null,
+constraint foreign key (movie_id) references movies(id),
+audience_id int not null,
+constraint foreign key (audience_id) references audience(id),
+primary key (movie_id, audience_id)
+);
+
+CREATE TABLE movies_database.movies_nominations(
+movie_id int not null,
+constraint foreign key (movie_id) references movies(id),
+nomination_id int not null,
+constraint foreign key (nomination_id) references nominations(id),
+primary key (movie_id, nomination_id)
+);
+
+CREATE TABLE movies_database.actors(
+id int not null auto_increment primary key,
+name varchar(255) not null,
+address varchar(255) null default null,
+gender enum('M', 'F') not null,
+birthay date not null,
+month_salary decimal
+);
+
+CREATE TABLE movies_database.movies_actors(
+movie_id int not null,
+constraint foreign key (movie_id) references movies(id),
+actor_id int not null,
+constraint foreign key (actor_id) references actors(id)
+);
+
+CREATE TABLE movies_database.salaryPayments(
+	id INT not null AUTO_INCREMENT PRIMARY KEY,
+	actor_id INT NOT NULL,
+	month TINYINT,
+	year YEAR,
+	salaryAmount double,
+	dateOfPayment datetime not null,
+	CONSTRAINT FOREIGN KEY (actor_id) 
+		REFERENCES actors(id),
+	UNIQUE KEY(`actor_id`,`month`,`year`)
+    );
+
+
+insert into movies(title, date, budget, income, length)
+values('After', '2017-06-15', '1000000', '1300000', '96'),
+('Extraction', '2020-03-04', '15000000', '25000000','113'),
+('Once Upon a Time in Hollywood', '2019-06-26', '90000000', '320000000', '161'),
+('Underwater ', '2020-09-24', '12000000', '20000000', '95');
+
+INSERT INTO awards(name, year, movie_id)
+values('Academy Award for Best Supporting Actor', '2020', '3'),
+('Academy Award for Best Supporting Actor', 2017, 1),
+('Golden Globe Award for Best Screenplay', '2020', '2'),
+('Satellite Award for Best Motion Picture - Comedy or Musical', '2020', '1'),
+('New York Film Critics Circle Award for Best Screenplay', '2019', '3');
+
+INSERT INTO nominations(name, year)
+values('Academy Award for Best Actor', '2020',1),
+('Academy Award for Best Actor', '2019', 2 ),
+('Golden Globe Award for Best Director', '2020', 3),
+('Golden Globe Award for Best Director', '2019', 4),
+('Academy Award for Best Picture', '2020',1 ),
+('BAFTA Award for Best Actor in a Leading Role', '2019',3),
+('Cannes Best Actor Award', '2019',4 );
+
+insert into audience(name, old, visitedPremiere)
+values('Ivan Ivanov', '25', '2'),
+('Petur Hristov', '22', '1'),
+('Ioan Angelov', '30', '3'),
+('Raq Petrova', '27', '3'),
+('Maq Stoyanova', '29', '4');
+
+insert into movies_audience(movie_id, audience_id)
+values(1, 1),
+(1,2),
+(1, 3),
+(2, 1),
+(2, 2),
+(2, 3),
+(3,1);
+
+insert into movies_nominations(movie_id, nomination_id)
+values(1, 1),
+(1,2),
+(1, 3),
+(2,1),
+(2,2),
+(2,3),
+(3,1),
+(3,2),
+(3,3);
+
+insert into actors(name, address, gender, birthay, month_salary)
+values ('Brat Pit', 'LA, str 514', 'M', '1968-09-05', '11500'),
+('Arnold Schwarzenegger', 'London', 'M', '1972-08-25', '11123'),
+('Angelina Juli', 'NY, str 678', 'F', '1967-12-05', '11430'),
+('Tom Hanks', 'Concord', 'M', '1956-07-09', null),
+('Jason Statment', 'LA', 'M', '1978-07-07', null);
+
+insert into movies_actors(movie_id, actor_id)
+values (1, 1),
+(1,2),
+(1,3),
+(1,4),
+(2,1),
+(2,2),
+(2,3),
+(2,4),
+(3,1),
+(3,3);
+
+
+
+select distinct movies.title, movies.date, awards.name as nameOfAward, awards.year, nominations.name, nominations.year
+from  movies
+join awards
+on movies.id=awards.movie_id
+join movies_nominations
+on movies.id=movies_nominations.movie_id
+join nominations
+on nominations.id=movies_nominations.nomination_id
+where movies.title= 'Once Upon a Time in Hollywood';
+
+use movies_database;
+drop procedure if exists  CursorActor;
+delimiter |
+create procedure CursorActor()
+begin
+declare finished int;
+declare tempName varchar(100);
+declare tempBirth varchar(10);
+declare actorCursor CURSOR for
+SELECT name, birthay
+from actors
+where month_salary is  null;
+declare continue handler FOR NOT FOUND set finished = 1;
+set finished = 0;
+OPEN actorCursor;
+actor_loop: while( finished = 0)
+DO
+FETCH actorCursor INTO tempName,tempBirth;
+       IF(finished = 1)
+       THEN 
+       LEAVE actor_loop;
+       END IF;	
+       SELECT tempName,tempBirth; 
+end while;
+CLOSE actorCursor;
+SET finished = 0;
+SELECT 'Finished!';
+end;
+|
+delimiter |
+call CursorActor();
+

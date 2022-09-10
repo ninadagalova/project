@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Протокол POP3</title>
+        <link rel="stylesheet" href = "style.css">
+    </head>
+    <body>
+        <section class= "header2">
+           <nav>   
+                  <a href="index.html"><img src="images/logo.png" class="log" ></a>
+                <div class ="nav-links">
+                    <ul>
+                        <li><a href ="what.html"> POP3 </a></li>
+                        <li><a href ="model.html">Модел </a></li>
+                        <li><a href ="positive_negative.html">Предимства и Недостатъци</a></li>
+                        <li><a href ="comand.html"> Команди</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="nav-link">
+                    <ul>
+                        <li><a href = "contact.html">Контакти</a></li>
+                        <li><a href = "map.html">Карта на сайта</a></li>
+
+                    </ul>
+                </div>
+    <!---- page ------->
+            <div class="row">
+                <div class="text1">
+                    <h1>Моделът POP3</h1>
+                    <br>
+                    <img src="images/model.png" width="400" height="200">
+                    <br>
+                    <p style="font-size: 17px"><b><u>Модел клиент-сървър</u></b></p>
+                    <p> Първоначално системата сървър стартира POP3 услугата като слуша на порт 110. Когато един клиент иска да използва услугата трябва да направи <a target="_blank" href="https://bg.wikipedia.org/wiki/TCP" style=" color:dimgrey"> TCP</a> връзка със сървъра. При успешно направена връзка сървърът и клиентът си разменят съобщения до прекратяването на TCP връзката.Входящите съобщения се съхраняват на POP сървър, докато потребителят се регистрира, използвайки имейл клиент и изтегля съобщенията на своя компютър.
+                    </p>
+                </div>
+                    <div class="text1">
+                    <h1>Състояния на POP3</h1>
+                        <br>
+                    <img src="images/pop3_session.png" width="540" height="250">
+                 <font color = "black">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                             <th class="col-xs-1" scope="col">Състояние</th>
+                             <th class="col-xs-7" scope="col">Описание</th>
+                            </tr>    
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Одобрение</th>
+                            
+                            <td>
+                                <p>След успешно установена връзка и изпращане на привестващо съобщение от страна на сървъра, клиентът трябва да се представи с валидни потребителско име и парола.</p>
+                            </td>
+                            </tr> 
+                            <tr>
+                                <th scope="row">Транзакция</th>
+                                <td>
+                                    <p>В това състояние се влиза при успешно одобрение. Клиентът получава достъп до пощенска си кутия. Всяко писмо има идентификационен номер и размер в байтове. В този етап на сесията клиентът има възможност да проверява, чете и изтрива писма от пощенската си кутия.</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Обновяване</th>
+                                <td>
+                                    <p>В това състояние се влиза след като клиентът е изпратил командата <a href="comand.html" style="color:dimgrey"> QUIT </a> на съръвра. Сървърт се грижи да обнови съдържанието на пощенската кутия, освобождава предоставените ресурси и прекъсва TCP връзката.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </font>        
+                </div>
+
+            </div>
+        </section>
+        
+    </body>
+</html>
